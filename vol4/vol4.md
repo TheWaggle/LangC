@@ -5,7 +5,7 @@ marp: true
 # 第4回 特別講義
 
 ### 本日のゴール
-**C言語基礎：関数を作成することができるようになる**
+**C言語基礎：関数を作成することができるようになる、変数のスコープが理解できる**
 
 ---
 
@@ -158,7 +158,7 @@ int sum(int a, int b){
     return a+b;
 }
 
-void main(void) {
+int main(void) {
     sum(1, 2);
 }
 
@@ -174,7 +174,7 @@ void main(void) {
 ```c
 #include <stdio.h>
 
-void main(void) {
+int main(void) {
     sum(1, 2);
 }
 
@@ -202,16 +202,15 @@ main関数より前に定義しないと自作関数が使えないとmain関数
 ---
 ### プロトタイプ宣言の書き方
 
-
-
 ```c
 #include <stdio.h>
 
 /* プロトタイプ宣言 */
 int sum(int,int);
 
-void main(void) {
-    sum(1, 2);
+int main(void) {
+    printf("%d",sum(1, 2));
+    return 0;
 }
 
 int sum(int a, int b){
@@ -219,9 +218,153 @@ int sum(int a, int b){
 }
 
 ```
+---
+
+### 問い1
+
+次の関数をプロトタイプ宣言を使わずに実行できるように修正してください。
+
+```c
+
+
+#include <stdio.h>
+
+int main(void) {
+    printf("%d",multiply(2));
+    return 0;
+}
+
+int multiply(int a){
+    return a*a;
+}
+
+```
+---
+
+### 問い2
+
+次の関数をプロトタイプ宣言を使って実行できるように修正してください。
+
+```c
+
+#include <stdio.h>
+
+int main(void) {
+    printf("%d",multiply(2));
+    return 0;
+}
+
+int multiply(int a){
+    return a*a;
+}
+
+```
+---
+
+### 問い3
+
+次の関数をプロトタイプ宣言を使って実行できるように修正し、
+実数を引数に取り、戻り値も実数で返すように修正してください。
+
+例) ```multiply(2.0)```を実行したら```4.000000```を返す
+
+```c
+
+#include <stdio.h>
+
+int main(void) {
+    printf("%d",multiply(2));
+    return 0;
+}
+
+int multiply(int a){
+    return a*a;
+}
+
+```
 
 ---
 
+### 問い４
 
+コンソールから入力値を取得する scanf("%d %d", &input, &input2); 関数がある。使い方を以下に示すので
+応用して、multiply(int a)のaの値をscanfで取得して実行するプログラムを書きなさい。
+※ コンソールから入力値を取得することを今後は標準入力と表現します。
 
+例）
+```c
 
+#include <stdio.h>
+
+/* プロトタイプ宣言 */
+int sum(int,int);
+
+int main(void) {
+    int input, input2;
+    printf("こちらに1 2のようにスペースを入れて数値２つを入力してください->");
+    scanf("%d %d", &input, &input2);
+    printf("%d",sum(input, input2));
+    return 0;
+}
+
+int sum(int a, int b){
+    return a+b;
+}
+
+```
+---
+
+### 問い5
+
+次の関数を作成してください。
+関数名 repeat_calls で引数に整数値を入れるとその数値の回数分 "hello!"を改行付きでコンソール上に出力します。なお戻り値は不要です。
+※ コンソール上への出力を標準出力といい、今後は標準出力と表現します。
+
+---
+
+### 問い6
+
+次の関数を作成してください。
+関数名 odd_number_judgment で奇数判定するプログラムを作成してください。
+標準入力した数値が奇数であれば odd 偶数であれば even を標準出力する。
+※ HINT 奇数か偶数かは２で割り切れるかで判断できる 余りを求める演算子%を利用すると簡単にできる
+
+---
+
+## 変数の範囲
+
+自作関数を作成する際に変数を定義する事は多いです。ではこの変数はどこまでの範囲有効なのでしょうか？
+変数には有効な範囲に基づいてローカル変数、グローバル変数という概念があります。
+
+実際に動きで確認してみましょう。
+例）
+カウントをする自作関数を作成して、関数を複数回呼び出します。また、今回は説明用にプレビュー関数を作り
+プレビュー関数の中でカウント関数を呼び出しています。実行して実行結果を確認してみましょう。
+
+```c
+#include <stdio.h>
+void counter(void);
+void preview(void);
+
+int main(void) {
+    counter();
+    preview();
+    return 0;
+}
+
+void counter(void){
+    int count = 0;
+    count++;
+    printf("%d\n", count);
+}
+
+void preview(void) {
+    counter();
+}
+```
+
+---
+
+### ローカル変数
+
+先に見た例では、変数の値は1のままでcount++;（インクリメント）を利用しても数値が１加算されずに毎回１が標準出力されていました。
